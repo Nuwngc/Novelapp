@@ -79,6 +79,7 @@ const mk=n=>({t:'Chương '+(n+1)+': '+CT[n%6],b:P.map((_,k)=>P[(k+n)%4])});
 const seed=()=>[['Đàn chị mau im đi!','o','Comedy','Mộc Lan'],['Khoảng cách của tam giác tình yêu','t','Romance','Hạ Vân'],['Làm tra nam để cứu vợ','t','Fantasy','Thanh Sơn'],['Cuộc sống an nhàn tại học viện','o','Học đường','Mộc Lan'],['Tiên lộ vô cương','o','Tiên hiệp','Lăng Tiêu'],['Bạn gái Nhật Bản của học bá','t','Romance','Hạ Vân'],['Romcom của tôi được lên sóng','a','Comedy','Bút AI'],['Tái sinh thành thiếu nữ dị giới','a','Isekai','Bút AI'],['Hậu cung của kẻ lười','t','Harem','Thanh Sơn'],['Đạo quán dưới chân núi','o','Tiên hiệp','Lăng Tiêu'],['Vệ sĩ của nữ thần trường','o','Học đường','Mộc Lan'],['Nhật ký người đổi giới','a','Gender Bender','Bút AI']].map((x,i)=>({id:i+1,t:x[0],k:x[1],g:x[2],a:x[3],h:(i*47+150)%360,f:900-i*61,d:'Một câu chuyện nhẹ nhàng về những lựa chọn nhỏ làm đổi hướng cả một đời người.',c:[0,1,2,3,4,5].map(mk)}));
 let S;try{S=JSON.parse(localStorage.ln)}catch(e){}
 S=S||{me:null,exp:0,read:[],done:[],au:{},hide:[],fs:18,users:[{n:'Mộc Lan',r:'tac-gia'},{n:'Hạ Vân',r:'qtv'}],stories:seed()};
+if(API&&!S.srv)S={me:null,exp:0,read:[],done:[],au:{},hide:[],fs:S.fs||18,users:[],stories:[],srv:1};
 const save=()=>{try{localStorage.ln=JSON.stringify(S)}catch(e){}};
 const $=s=>document.querySelector(s),app=$('#app'),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let V='home',ST=1,CH=0,GF=0,Q='',A=null,tm=null,playing=false;
@@ -98,13 +99,13 @@ const V_={
 home(){const v=vis(),last=S.read.map(id=>v.find(s=>s.id==id)).filter(Boolean).slice(0,3);
 return `<div class=top><div class=logo><i class=seal>書</i>Cổng Truyện</div><button class=ib onclick="go('search')" aria-label="Tìm">${ic('search')}</button></div>${tuCard()}
 <div class=chips>${G.map((g,i)=>`<button class="chip${i==GF?' on':''}" onclick="GF=${i};render()">${g}</button>`).join('')}</div>
-<h2>Đề cử</h2><div class=feat>${v.slice(0,4).map(s=>`<button class=fc onclick="op(${s.id})">${cv(s)}<div><b>${esc(s.t)}</b><small class=mu>${T[s.k][1]} · ${esc(s.a)}</small><p>${s.d}</p></div></button>`).join('')}</div>
+${S.stories.length?'':'<p class=mu style="margin-top:20px">Chưa có truyện nào. Tác giả đăng nhập, vào mục Quản lý để đăng chương đầu tiên.</p>'}<h2>Đề cử</h2><div class=feat>${v.slice(0,4).map(s=>`<button class=fc onclick="op(${s.id})">${cv(s)}<div><b>${esc(s.t)}</b><small class=mu>${T[s.k][1]} · ${esc(s.a)}</small><p>${s.d}</p></div></button>`).join('')}</div>
 ${last.length?`<h2>Truyện vừa đọc</h2>${last.map(row).join('')}`:''}
 ${sec('Sáng tác mới nhất','o')}${sec('Truyện dịch mới nhất','t')}${sec('AI mới nhất','a')}
 <h2>Theo dõi nhiều</h2>${[...v].sort((a,b)=>b.f-a.f).slice(0,5).map((s,i)=>`<button class=row onclick="op(${s.id})"><span class=rk>${i+1}</span>${cv(s)}<div><b>${esc(s.t)}</b><small>${s.f} theo dõi</small></div></button>`).join('')}`},
 search(){return `<div class=top><h1>Tìm truyện</h1></div><input id=q placeholder="Tên truyện hoặc tác giả" value="${esc(Q)}" oninput="Q=this.value;$('#rs').innerHTML=rs()"><div id=rs>${rs()}</div>`},
 story(){const s=cur();return `<div class=top><button class=ib onclick="go('home')" aria-label="Quay lại">${ic('back')}</button><div class=logo style="font-size:16px">${esc(s.t)}</div></div>
-<div class=hd>${cv(s)}<div><h1>${esc(s.t)}</h1><small class=mu>${esc(s.a)} · ${S.au[s.a]||0} tu vi tác giả</small><p>${s.d}</p></div></div>
+<div class=hd>${cv(s)}<div><h1>${esc(s.t)}</h1><small class=mu>${esc(s.a)} · ${s.ae!=null?s.ae:(S.au[s.a]||0)} tu vi tác giả</small><p>${s.d}</p></div></div>
 <h2>Danh sách chương</h2>${s.c.map((c,i)=>`<button class=row onclick="rd(${i})"><div><b>${esc(c.t)}</b><small>${S.done.includes(s.id+'-'+i)?'Đã đọc':'Chưa đọc'}</small></div></button>`).join('')}`},
 read(){const s=cur(),c=s.c[CH];return `<div class=top><button class=ib onclick="stop();go('story')" aria-label="Quay lại">${ic('back')}</button><div class=logo style="font-size:15px">${esc(s.t)}</div><button class=ib onclick="fz(-1)">A−</button><button class=ib onclick="fz(1)">A+</button></div>
 <article class=rd style="--fs:${S.fs}px"><h1>${esc(c.t)}</h1>${c.b.map(p=>`<p>${esc(p)}</p>`).join('')}</article>`},
@@ -116,7 +117,8 @@ return `<div class=top><h1>Quản lý</h1><i class=tag>${RN[m.r]}</i></div>
 ${au?`<h2>Đăng chương mới</h2><input id=pt placeholder="Tên truyện"><input id=pc placeholder="Tiêu đề chương"><textarea id=pb placeholder="Nội dung chương"></textarea><button class=btn onclick="pub()">Đăng chương</button>`:''}
 ${md?`<h2>Duyệt truyện</h2>${S.stories.map(s=>`<div class=row><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.a)}</small></div><button class=ib onclick="hd(${s.id})">${S.hide.includes(s.id)?'Hiện':'Ẩn'}</button></div>`).join('')}`:''}
 ${m.r=='admin'?`<h2>Tài khoản</h2>${S.users.map((u,i)=>`<div class=row><b style="flex:1;font-weight:500">${esc(u.n)}</b><select style="width:auto;margin:0" onchange="ur(${i},this.value)">${Object.keys(RN).map(k=>`<option value="${k}"${k==u.r?' selected':''}>${RN[k]}</option>`).join('')}</select></div>`).join('')}`:''}`},
-me(){const m=S.me;if(m)return `<div class=top><h1>Tài khoản</h1></div><div class=tu><i class=seal>${esc(m.n[0])}</i><b>${esc(m.n)}</b><small>${RN[m.r]} · ${realm(lv().l)}</small></div><button class="btn alt" onclick="S.me=null;save();render()">Đăng xuất</button>`;
+me(){const m=S.me;if(m)return `<div class=top><h1>Tài khoản</h1></div><div class=tu><i class=seal>${esc(m.n[0])}</i><b>${esc(m.n)}</b><small>${RN[m.r]} · ${realm(lv().l)}</small></div><button class="btn alt" onclick="out()">Đăng xuất</button>`;
+if(API)return `<div class=top><h1>Đăng nhập</h1></div><input id=nm placeholder="Tên tài khoản" autocomplete=username><input id=pw type=password placeholder="Mật khẩu" autocomplete=current-password><button class=btn onclick="auth('login')">Đăng nhập</button><button class="btn alt" onclick="auth('register')">Tạo tài khoản mới</button>`;
 return `<div class=top><h1>Đăng nhập</h1></div><p class=mu>Bản xem thử: chọn vai trò để trải nghiệm. Đăng nhập thật sẽ nối với server.</p><input id=nm placeholder="Tên của bạn"><div class=roles>${Object.keys(RN).map(k=>`<button class="btn${k=='doc'?'':' alt'}" style="margin:0" onclick="login('${k}')">${RN[k]}</button>`).join('')}</div>`}};
 function rs(){const q=Q.toLowerCase();const l=S.stories.filter(s=>!S.hide.includes(s.id)&&(s.t+s.a).toLowerCase().includes(q));return l.length?l.map(row).join(''):'<p class=mu style="margin-top:16px">Không có truyện khớp. Thử tên khác hoặc tên tác giả.</p>'}
 function bar(){const m=S.me&&S.me.r!='doc',tb=[['home','Trang chủ','home'],['search','Tìm','search'],['tu','Tu luyện','scroll'],...(m?[['manage','Quản lý','shield']]:[]),['me','Tài khoản','user']];
@@ -125,22 +127,29 @@ return V=='read'?`<div class=pl><div><button class=ib onclick="nx(-1)" aria-labe
 function render(){app.innerHTML=V_[V]()+bar()}
 window.go=v=>{V=v;render();scrollTo(0,0)};
 window.op=i=>{ST=i;go('story')};
-window.rd=i=>{CH=i;const s=cur(),k=s.id+'-'+i;S.read=[s.id,...S.read.filter(x=>x!=s.id)];go('read');if(!S.done.includes(k)){S.done.push(k);save();if(S.me){add(10,'đọc chương');S.au[s.a]=(S.au[s.a]||0)+3;save()}else toast('Đăng nhập để tích tu vi')}};
+window.rd=i=>{CH=i;const s=cur(),k=s.id+'-'+i;S.read=[s.id,...S.read.filter(x=>x!=s.id)];go('read');if(API){if(S.me)rq('/read','POST',{story:s.id,ch:i}).then(r=>gain(r,'đọc chương')).catch(e=>toast(e.message));else toast('Đăng nhập để tích tu vi');return}if(!S.done.includes(k)){S.done.push(k);save();if(S.me){add(10,'đọc chương');S.au[s.a]=(S.au[s.a]||0)+3;save()}else toast('Đăng nhập để tích tu vi')}};
 window.fz=d=>{S.fs=Math.max(14,Math.min(28,S.fs+d*2));save();render()};
 window.stop=()=>{playing=false;speechSynthesis.cancel();if(A){A.pause();A=null}clearInterval(tm)};
 window.pp=()=>{if(playing){stop();return render()}const s=cur();playing=true;
 if(API){A=new Audio(`${API}/api/tts?story=${s.id}&ch=${CH}`);A.onended=()=>nx(1);A.play()}
 else{const u=new SpeechSynthesisUtterance(s.c[CH].b.join(' '));u.lang='vi-VN';u.onend=()=>{if(playing)nx(1)};speechSynthesis.speak(u)}
-tm=setInterval(()=>S.me&&add(1,'nghe truyện'),10000);render()};
+tm=setInterval(()=>{if(!S.me)return;if(API)rq('/listen','POST',{}).then(r=>gain(r,'nghe truyện')).catch(()=>{});else add(1,'nghe truyện')},10000);render()};
 window.nx=d=>{const w=playing,n=cur().c.length;if(CH+d<0||CH+d>=n){stop();return render()}stop();rd(CH+d);if(w)pp()};
 function sheet(h){const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class=sh>${h}</div>`;o.onclick=e=>{if(e.target==o)o.remove()};document.body.append(o)}
 window.dls=()=>{sheet(`<h2>Tải audio</h2><p class=mu>Chọn các chương để gộp thành một file.</p>${cur().c.map((c,i)=>`<label class=ck><input type=checkbox style="width:auto;margin:0" value=${i}${i==CH?' checked':''}>${esc(c.t)}</label>`).join('')}<button class=btn onclick="dl()">Tải audio</button>`)};
 window.dl=()=>{const ids=[...document.querySelectorAll('.sh input:checked')].map(x=>x.value);if(!ids.length)return toast('Chọn ít nhất một chương');if(!API)return toast('Cần nối server giọng đọc Google để tải audio');location.href=`${API}/api/audio?story=${ST}&ch=${ids.join(',')}`;$('.ov').remove()};
 window.login=r=>{const n=($('#nm').value||'').trim()||RN[r];S.me={n,r};if(!S.users.some(u=>u.n==n))S.users.push({n,r});save();go('home')};
-window.hd=i=>{S.hide=S.hide.includes(i)?S.hide.filter(x=>x!=i):[...S.hide,i];save();render()};
-window.ur=(i,r)=>{S.users[i].r=r;if(S.me&&S.me.n==S.users[i].n)S.me.r=r;save();render()};
-window.pub=()=>{const t=$('#pt').value.trim(),c=$('#pc').value.trim(),b=$('#pb').value.trim();if(!t||!c||!b)return toast('Điền đủ tên truyện, tiêu đề và nội dung');
+window.hd=i=>{if(API)return rq('/stories/'+i+'/hide','POST',{}).then(sync).catch(e=>toast(e.message));S.hide=S.hide.includes(i)?S.hide.filter(x=>x!=i):[...S.hide,i];save();render()};
+window.ur=(i,r)=>{if(API)return rq('/users/'+encodeURIComponent(S.users[i].n)+'/role','POST',{role:r}).then(sync).catch(e=>{toast(e.message);render()});S.users[i].r=r;if(S.me&&S.me.n==S.users[i].n)S.me.r=r;save();render()};
+window.pub=async()=>{const t=$('#pt').value.trim(),c=$('#pc').value.trim(),b=$('#pb').value.trim();if(!t||!c||!b)return toast('Điền đủ tên truyện, tiêu đề và nội dung');
+if(API){try{let s=S.stories.find(x=>x.t==t&&x.a==S.me.n);if(!s)s=await rq('/stories','POST',{t});gain(await rq('/stories/'+s.id+'/chapters','POST',{t:c,b}),'đăng chương');await sync()}catch(e){toast(e.message)}return}
 let s=S.stories.find(x=>x.t==t&&x.a==S.me.n);if(!s){s={id:Date.now(),t,k:'o',g:'Tiên hiệp',a:S.me.n,h:Math.floor(Math.random()*360),f:0,d:'Truyện mới đăng.',c:[]};S.stories.unshift(s)}
 s.c.push({t:c,b:b.split(/\n+/)});add(20,'đăng chương');render()};
-render();
+const TK=()=>localStorage.lnt||'';
+async function rq(p,m='GET',b){const r=await fetch(API+'/api'+p,{method:m,headers:{'Content-Type':'application/json',Authorization:'Bearer '+TK()},body:b?JSON.stringify(b):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Lỗi kết nối server');return j}
+function gain(r,why){const a=lv().l;S.exp=r.exp;save();if(r.gained)toast(lv().l>a?'Đột phá! '+realm(lv().l):'+'+r.gained+' tu vi · '+why)}
+async function sync(){if(!API)return;try{if(TK()){try{const m=await rq('/me');S.me={n:m.name,r:m.role};S.exp=m.exp}catch(e){localStorage.removeItem('lnt');S.me=null}}else S.me=null;const st=await rq('/stories');S.stories=st;S.hide=st.filter(s=>s.hide).map(s=>s.id);if(S.me&&S.me.r=='admin')S.users=(await rq('/users')).map(u=>({n:u.name,r:u.role}));save()}catch(e){toast('Chưa kết nối được server: '+e.message)}render()}
+window.auth=async k=>{try{const r=await rq('/'+k,'POST',{name:$('#nm').value.trim(),password:$('#pw').value});localStorage.lnt=r.token;await sync();go('home')}catch(e){toast(e.message)}};
+window.out=()=>{if(API){localStorage.removeItem('lnt');S.me=null;S.exp=0;save();sync()}else{S.me=null;save();render()}};
+render();sync();
 </script></body></html>
