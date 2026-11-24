@@ -1,0 +1,6 @@
+{
+  "appId": "vn.congtruyen.app",
+  "appName": "Cổng Truyện",
+  "webDir": "www",
+  "android": { "allowMixedContent": true }
+}

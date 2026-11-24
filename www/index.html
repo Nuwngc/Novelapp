@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12172a">
+<title>Cổng Truyện</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=Noto+Serif:wght@400;700&display=swap">
+<style>
+:root{--paper:#edf0ea;--card:#f8faf6;--ink:#1c2540;--mute:#68718a;--seal:#b4312b;--jade:#2f7d6b;--gold:#a97b24;--line:#d5dacd;--sans:'Be Vietnam Pro',system-ui,sans-serif;--serif:'Noto Serif',Georgia,serif}
+@media(prefers-color-scheme:dark){:root{--paper:#12172a;--card:#1a2038;--ink:#e8eaf2;--mute:#9aa3bd;--seal:#e0574f;--jade:#5fc4a8;--gold:#d9b25c;--line:#2a3152}}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--paper);color:var(--ink);font:15px/1.5 var(--sans);padding-top:env(safe-area-inset-top)}
+#app{max-width:560px;margin:0 auto;min-height:100vh;padding:0 16px 96px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.top{display:flex;align-items:center;gap:10px;padding:14px 0 10px}
+.logo{display:flex;align-items:center;gap:9px;font:700 19px var(--serif);flex:1;min-width:0}
+.seal{display:inline-grid;place-items:center;width:30px;height:30px;background:var(--seal);color:#fff;font:700 16px var(--serif);font-style:normal;border-radius:4px;flex:none}
+.ib{min-width:38px;height:38px;padding:0 8px;border-radius:19px;display:grid;place-items:center;border:1px solid var(--line);background:var(--card);font-weight:700;font-size:13px}
+.tu{margin:6px 0 16px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:center}
+.tu .seal{width:54px;height:54px;font-size:30px;grid-row:span 2;border-radius:6px}
+.tu b{font:700 20px var(--serif)}.tu small,.mu{color:var(--mute);font-size:13px}
+.bar{height:8px;border-radius:8px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--jade),var(--gold));transition:width .5s}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.chip{flex:none;padding:6px 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:13px}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+h2{font:700 18px var(--serif);margin:24px 0 10px}
+h1{font:700 22px/1.3 var(--serif)}
+.feat{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+.fc{flex:none;width:86%;scroll-snap-align:center;display:flex;gap:14px;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);text-align:left}
+.fc .cv{width:96px;flex:none}.fc b{font:700 16px/1.3 var(--serif);display:block}
+.fc p,.hd p{color:var(--mute);font-size:13px;margin-top:6px}
+.fc p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 12px}
+.it{text-align:left}
+.it span{font-size:13px;font-weight:500;margin-top:7px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cv{position:relative;aspect-ratio:3/4.3;border-radius:5px 10px 10px 5px;overflow:hidden;display:flex;justify-content:center;padding:16% 0 10%;color:#f6efe0;box-shadow:inset 5px 0 0 rgba(0,0,0,.28),0 6px 14px -8px rgba(0,0,0,.55)}
+.cv em{font:700 clamp(13px,3.6vw,17px)/1.3 var(--serif);writing-mode:vertical-rl;letter-spacing:.12em;max-height:100%;overflow:hidden;font-style:normal}
+.cv .seal{position:absolute;top:6px;right:6px;width:20px;height:20px;font-size:11px;border-radius:3px}
+.row{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center;width:100%;text-align:left}
+.row .cv{width:46px;flex:none}.row b{display:block;font-weight:500}.row small{color:var(--mute)}
+.rk{font:700 22px var(--serif);width:24px;color:var(--gold);flex:none}
+.hd{display:flex;gap:16px;padding:6px 0}.hd .cv{width:112px;flex:none}
+.rd{font:var(--fs,18px)/1.85 var(--serif);padding:6px 0 150px}
+.rd h1{margin:10px 0 20px}.rd p{margin-bottom:1em;text-indent:1.5em}
+.tabs,.pl{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs div,.pl div{display:flex;max-width:560px;margin:0 auto}
+.tab{flex:1;display:grid;justify-items:center;gap:2px;padding:9px 0 8px;font-size:11px;color:var(--mute)}
+.tab.on{color:var(--seal);font-weight:700}
+.pl div{align-items:center;justify-content:space-around;padding:10px 16px}
+.pl .go{width:54px;height:54px;border-radius:50%;background:var(--seal);color:#fff;display:grid;place-items:center}
+.toast{position:fixed;top:calc(14px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:99px;font-size:13px;z-index:9;max-width:90%}
+.ov{position:fixed;inset:0;background:rgba(10,14,30,.55);display:flex;align-items:flex-end;z-index:8}
+.sh{background:var(--card);width:100%;max-width:560px;margin:0 auto;border-radius:18px 18px 0 0;padding:6px 18px calc(18px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto}
+.ck{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.btn{width:100%;margin-top:14px;padding:13px;border-radius:12px;background:var(--seal);color:#fff;font-weight:700}
+.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+input,select,textarea{width:100%;padding:11px 12px;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+textarea{min-height:140px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.lad{display:grid;gap:8px;margin-top:6px}.lad div{display:flex;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.lad .on{border-color:var(--seal);font-weight:700}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--seal);color:#fff}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head>
+<body><div id="app"></div>
+<script>
+const API=''; // Địa chỉ server giọng đọc Google, ví dụ 'https://ten-app.onrender.com'. Để trống = dùng giọng đọc của máy.
+const IC={home:'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',search:'M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-5-5',scroll:'M7 4h11a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a3 3 0 013-3zM8 9h8M8 13h8',shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1-4 4-6 8-6s7 2 8 6',back:'M15 5l-7 7 7 7',play:'M8 4l12 8-12 8z',pause:'M8 5v14M16 5v14',dl:'M12 4v11M7 11l5 5 5-5M5 20h14',prev:'M18 5l-9 7 9 7M6 5v14',next:'M6 5l9 7-9 7M18 5v14'};
+const ic=n=>`<svg viewBox="0 0 24 24"><path d="${IC[n]}"/></svg>`;
+const G=['Tất cả','Comedy','Romance','Fantasy','Học đường','Tiên hiệp','Harem','Isekai','Gender Bender'];
+const T={o:['作','Sáng tác'],t:['译','Truyện dịch'],a:['AI','AI']};
+const RN={doc:'Độc giả','tac-gia':'Tác giả',qtv:'QTV',admin:'Admin'};
+const R=['Luyện Khí','Trúc Cơ','Kim Đan','Nguyên Anh','Hóa Thần','Luyện Hư'];
+const P=['Gió đêm lùa qua khe cửa, mang theo mùi trà nguội và tiếng chuông xa. Cậu ngồi lặng bên bàn học, nghe tim mình đập chậm lại.','Cô gái ngoảnh đầu nhìn, ánh mắt như mặt hồ sau cơn mưa. "Cậu định im lặng đến bao giờ?" cô hỏi, giọng khẽ mà rõ.','Không ai trả lời. Ngoài sân, lá ngô đồng rụng từng chiếc, như thể mùa thu cũng đang chờ một câu nói chưa thành lời.','Cuối cùng cậu đứng dậy, đẩy cửa bước ra. Con đường phía trước còn dài, nhưng lần này cậu không đi một mình.'];
+const CT=['Gặp gỡ','Hiểu lầm','Cơn mưa','Lời hứa','Đột phá','Trở về'];
+const mk=n=>({t:'Chương '+(n+1)+': '+CT[n%6],b:P.map((_,k)=>P[(k+n)%4])});
+const seed=()=>[['Đàn chị mau im đi!','o','Comedy','Mộc Lan'],['Khoảng cách của tam giác tình yêu','t','Romance','Hạ Vân'],['Làm tra nam để cứu vợ','t','Fantasy','Thanh Sơn'],['Cuộc sống an nhàn tại học viện','o','Học đường','Mộc Lan'],['Tiên lộ vô cương','o','Tiên hiệp','Lăng Tiêu'],['Bạn gái Nhật Bản của học bá','t','Romance','Hạ Vân'],['Romcom của tôi được lên sóng','a','Comedy','Bút AI'],['Tái sinh thành thiếu nữ dị giới','a','Isekai','Bút AI'],['Hậu cung của kẻ lười','t','Harem','Thanh Sơn'],['Đạo quán dưới chân núi','o','Tiên hiệp','Lăng Tiêu'],['Vệ sĩ của nữ thần trường','o','Học đường','Mộc Lan'],['Nhật ký người đổi giới','a','Gender Bender','Bút AI']].map((x,i)=>({id:i+1,t:x[0],k:x[1],g:x[2],a:x[3],h:(i*47+150)%360,f:900-i*61,d:'Một câu chuyện nhẹ nhàng về những lựa chọn nhỏ làm đổi hướng cả một đời người.',c:[0,1,2,3,4,5].map(mk)}));
+let S;try{S=JSON.parse(localStorage.ln)}catch(e){}
+S=S||{me:null,exp:0,read:[],done:[],au:{},hide:[],fs:18,users:[{n:'Mộc Lan',r:'tac-gia'},{n:'Hạ Vân',r:'qtv'}],stories:seed()};
+const save=()=>{try{localStorage.ln=JSON.stringify(S)}catch(e){}};
+const $=s=>document.querySelector(s),app=$('#app'),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let V='home',ST=1,CH=0,GF=0,Q='',A=null,tm=null,playing=false;
+const cur=()=>S.stories.find(s=>s.id==ST);
+const need=l=>80+l*45;
+const lv=()=>{let e=S.exp,l=0;while(e>=need(l)){e-=need(l);l++}return{l,e,n:need(l)}};
+const realm=l=>R[Math.min(5,l/9|0)]+' · Tầng '+(l%9+1);
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.append(d);setTimeout(()=>d.remove(),2200)}
+function add(n,why){const a=lv().l;S.exp+=n;save();const b=lv().l;toast(b>a?'Đột phá! '+realm(b):'+'+n+' tu vi · '+why);}
+const cv=s=>`<div class=cv style="background:linear-gradient(165deg,hsl(${s.h} 38% 34%),hsl(${(s.h+35)%360} 42% 16%))"><i class=seal>${T[s.k][0]}</i><em>${esc(s.t.slice(0,18))}</em></div>`;
+const vis=()=>S.stories.filter(s=>!S.hide.includes(s.id)&&(!GF||s.g==G[GF]));
+const item=s=>`<button class=it onclick="op(${s.id})">${cv(s)}<span>${esc(s.t)}</span></button>`;
+const row=s=>`<button class=row onclick="op(${s.id})">${cv(s)}<div><b>${esc(s.t)}</b><small>${esc(s.a)} · ${T[s.k][1]}</small></div></button>`;
+const sec=(t,k)=>{const l=vis().filter(s=>s.k==k).slice(0,6);return l.length?`<h2>${t}</h2><div class=grid>${l.map(item).join('')}</div>`:''};
+const tuCard=()=>{const u=lv();return `<div class=tu><i class=seal>道</i><b>${realm(u.l)}</b><div><div class=bar><i style="width:${u.e/u.n*100}%"></i></div><small>${u.e}/${u.n} tu vi · ${S.me?'đọc và nghe truyện để tăng':'đăng nhập để tích tu vi'}</small></div></div>`};
+const V_={
+home(){const v=vis(),last=S.read.map(id=>v.find(s=>s.id==id)).filter(Boolean).slice(0,3);
+return `<div class=top><div class=logo><i class=seal>書</i>Cổng Truyện</div><button class=ib onclick="go('search')" aria-label="Tìm">${ic('search')}</button></div>${tuCard()}
+<div class=chips>${G.map((g,i)=>`<button class="chip${i==GF?' on':''}" onclick="GF=${i};render()">${g}</button>`).join('')}</div>
+<h2>Đề cử</h2><div class=feat>${v.slice(0,4).map(s=>`<button class=fc onclick="op(${s.id})">${cv(s)}<div><b>${esc(s.t)}</b><small class=mu>${T[s.k][1]} · ${esc(s.a)}</small><p>${s.d}</p></div></button>`).join('')}</div>
+${last.length?`<h2>Truyện vừa đọc</h2>${last.map(row).join('')}`:''}
+${sec('Sáng tác mới nhất','o')}${sec('Truyện dịch mới nhất','t')}${sec('AI mới nhất','a')}
+<h2>Theo dõi nhiều</h2>${[...v].sort((a,b)=>b.f-a.f).slice(0,5).map((s,i)=>`<button class=row onclick="op(${s.id})"><span class=rk>${i+1}</span>${cv(s)}<div><b>${esc(s.t)}</b><small>${s.f} theo dõi</small></div></button>`).join('')}`},
+search(){return `<div class=top><h1>Tìm truyện</h1></div><input id=q placeholder="Tên truyện hoặc tác giả" value="${esc(Q)}" oninput="Q=this.value;$('#rs').innerHTML=rs()"><div id=rs>${rs()}</div>`},
+story(){const s=cur();return `<div class=top><button class=ib onclick="go('home')" aria-label="Quay lại">${ic('back')}</button><div class=logo style="font-size:16px">${esc(s.t)}</div></div>
+<div class=hd>${cv(s)}<div><h1>${esc(s.t)}</h1><small class=mu>${esc(s.a)} · ${S.au[s.a]||0} tu vi tác giả</small><p>${s.d}</p></div></div>
+<h2>Danh sách chương</h2>${s.c.map((c,i)=>`<button class=row onclick="rd(${i})"><div><b>${esc(c.t)}</b><small>${S.done.includes(s.id+'-'+i)?'Đã đọc':'Chưa đọc'}</small></div></button>`).join('')}`},
+read(){const s=cur(),c=s.c[CH];return `<div class=top><button class=ib onclick="stop();go('story')" aria-label="Quay lại">${ic('back')}</button><div class=logo style="font-size:15px">${esc(s.t)}</div><button class=ib onclick="fz(-1)">A−</button><button class=ib onclick="fz(1)">A+</button></div>
+<article class=rd style="--fs:${S.fs}px"><h1>${esc(c.t)}</h1>${c.b.map(p=>`<p>${esc(p)}</p>`).join('')}</article>`},
+tu(){const u=lv(),cr=Math.min(5,u.l/9|0);return `<div class=top><h1>Tu luyện</h1></div>${tuCard()}
+<p class=mu>Đọc một chương: +10 tu vi. Nghe audio online: +1 mỗi 10 giây. Tác giả đăng chương: +20 tu vi, và được cộng thêm theo lượt đọc.</p>
+<h2>Các cảnh giới</h2><div class=lad>${R.map((r,i)=>`<div class="${i==cr?'on':''}"><span>${r}</span><span class=mu>${i<cr?'Đã qua':i==cr?'Tầng '+(u.l%9+1)+'/9':'9 tầng'}</span></div>`).join('')}</div>`},
+manage(){const m=S.me;if(!m||m.r=='doc')return V_.me();const au=m.r=='tac-gia'||m.r=='admin',md=m.r=='qtv'||m.r=='admin';
+return `<div class=top><h1>Quản lý</h1><i class=tag>${RN[m.r]}</i></div>
+${au?`<h2>Đăng chương mới</h2><input id=pt placeholder="Tên truyện"><input id=pc placeholder="Tiêu đề chương"><textarea id=pb placeholder="Nội dung chương"></textarea><button class=btn onclick="pub()">Đăng chương</button>`:''}
+${md?`<h2>Duyệt truyện</h2>${S.stories.map(s=>`<div class=row><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.a)}</small></div><button class=ib onclick="hd(${s.id})">${S.hide.includes(s.id)?'Hiện':'Ẩn'}</button></div>`).join('')}`:''}
+${m.r=='admin'?`<h2>Tài khoản</h2>${S.users.map((u,i)=>`<div class=row><b style="flex:1;font-weight:500">${esc(u.n)}</b><select style="width:auto;margin:0" onchange="ur(${i},this.value)">${Object.keys(RN).map(k=>`<option value="${k}"${k==u.r?' selected':''}>${RN[k]}</option>`).join('')}</select></div>`).join('')}`:''}`},
+me(){const m=S.me;if(m)return `<div class=top><h1>Tài khoản</h1></div><div class=tu><i class=seal>${esc(m.n[0])}</i><b>${esc(m.n)}</b><small>${RN[m.r]} · ${realm(lv().l)}</small></div><button class="btn alt" onclick="S.me=null;save();render()">Đăng xuất</button>`;
+return `<div class=top><h1>Đăng nhập</h1></div><p class=mu>Bản xem thử: chọn vai trò để trải nghiệm. Đăng nhập thật sẽ nối với server.</p><input id=nm placeholder="Tên của bạn"><div class=roles>${Object.keys(RN).map(k=>`<button class="btn${k=='doc'?'':' alt'}" style="margin:0" onclick="login('${k}')">${RN[k]}</button>`).join('')}</div>`}};
+function rs(){const q=Q.toLowerCase();const l=S.stories.filter(s=>!S.hide.includes(s.id)&&(s.t+s.a).toLowerCase().includes(q));return l.length?l.map(row).join(''):'<p class=mu style="margin-top:16px">Không có truyện khớp. Thử tên khác hoặc tên tác giả.</p>'}
+function bar(){const m=S.me&&S.me.r!='doc',tb=[['home','Trang chủ','home'],['search','Tìm','search'],['tu','Tu luyện','scroll'],...(m?[['manage','Quản lý','shield']]:[]),['me','Tài khoản','user']];
+return V=='read'?`<div class=pl><div><button class=ib onclick="nx(-1)" aria-label="Chương trước">${ic('prev')}</button><button class=go onclick="pp()" aria-label="Nghe">${ic(playing?'pause':'play')}</button><button class=ib onclick="nx(1)" aria-label="Chương sau">${ic('next')}</button><button class=ib onclick="dls()" aria-label="Tải audio">${ic('dl')}</button></div></div>`
+:`<nav class=tabs><div>${tb.map(t=>`<button class="tab${(V==t[0]||(V=='story'&&t[0]=='home'))?' on':''}" onclick="go('${t[0]}')">${ic(t[2])}${t[1]}</button>`).join('')}</div></nav>`}
+function render(){app.innerHTML=V_[V]()+bar()}
+window.go=v=>{V=v;render();scrollTo(0,0)};
+window.op=i=>{ST=i;go('story')};
+window.rd=i=>{CH=i;const s=cur(),k=s.id+'-'+i;S.read=[s.id,...S.read.filter(x=>x!=s.id)];go('read');if(!S.done.includes(k)){S.done.push(k);save();if(S.me){add(10,'đọc chương');S.au[s.a]=(S.au[s.a]||0)+3;save()}else toast('Đăng nhập để tích tu vi')}};
+window.fz=d=>{S.fs=Math.max(14,Math.min(28,S.fs+d*2));save();render()};
+window.stop=()=>{playing=false;speechSynthesis.cancel();if(A){A.pause();A=null}clearInterval(tm)};
+window.pp=()=>{if(playing){stop();return render()}const s=cur();playing=true;
+if(API){A=new Audio(`${API}/api/tts?story=${s.id}&ch=${CH}`);A.onended=()=>nx(1);A.play()}
+else{const u=new SpeechSynthesisUtterance(s.c[CH].b.join(' '));u.lang='vi-VN';u.onend=()=>{if(playing)nx(1)};speechSynthesis.speak(u)}
+tm=setInterval(()=>S.me&&add(1,'nghe truyện'),10000);render()};
+window.nx=d=>{const w=playing,n=cur().c.length;if(CH+d<0||CH+d>=n){stop();return render()}stop();rd(CH+d);if(w)pp()};
+function sheet(h){const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class=sh>${h}</div>`;o.onclick=e=>{if(e.target==o)o.remove()};document.body.append(o)}
+window.dls=()=>{sheet(`<h2>Tải audio</h2><p class=mu>Chọn các chương để gộp thành một file.</p>${cur().c.map((c,i)=>`<label class=ck><input type=checkbox style="width:auto;margin:0" value=${i}${i==CH?' checked':''}>${esc(c.t)}</label>`).join('')}<button class=btn onclick="dl()">Tải audio</button>`)};
+window.dl=()=>{const ids=[...document.querySelectorAll('.sh input:checked')].map(x=>x.value);if(!ids.length)return toast('Chọn ít nhất một chương');if(!API)return toast('Cần nối server giọng đọc Google để tải audio');location.href=`${API}/api/audio?story=${ST}&ch=${ids.join(',')}`;$('.ov').remove()};
+window.login=r=>{const n=($('#nm').value||'').trim()||RN[r];S.me={n,r};if(!S.users.some(u=>u.n==n))S.users.push({n,r});save();go('home')};
+window.hd=i=>{S.hide=S.hide.includes(i)?S.hide.filter(x=>x!=i):[...S.hide,i];save();render()};
+window.ur=(i,r)=>{S.users[i].r=r;if(S.me&&S.me.n==S.users[i].n)S.me.r=r;save();render()};
+window.pub=()=>{const t=$('#pt').value.trim(),c=$('#pc').value.trim(),b=$('#pb').value.trim();if(!t||!c||!b)return toast('Điền đủ tên truyện, tiêu đề và nội dung');
+let s=S.stories.find(x=>x.t==t&&x.a==S.me.n);if(!s){s={id:Date.now(),t,k:'o',g:'Tiên hiệp',a:S.me.n,h:Math.floor(Math.random()*360),f:0,d:'Truyện mới đăng.',c:[]};S.stories.unshift(s)}
+s.c.push({t:c,b:b.split(/\n+/)});add(20,'đăng chương');render()};
+render();
+</script></body></html>
