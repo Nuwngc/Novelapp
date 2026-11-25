@@ -107,7 +107,7 @@ search(){return `<div class=top><h1>Tìm truyện</h1></div><input id=q placehol
 story(){const s=cur();return `<div class=top><button class=ib onclick="go('home')" aria-label="Quay lại">${ic('back')}</button><div class=logo style="font-size:16px">${esc(s.t)}</div></div>
 <div class=hd>${cv(s)}<div><h1>${esc(s.t)}</h1><small class=mu>${esc(s.a)} · ${s.ae!=null?s.ae:(S.au[s.a]||0)} tu vi tác giả</small><p>${s.d}</p></div></div>
 <h2>Danh sách chương</h2>${s.c.map((c,i)=>`<button class=row onclick="rd(${i})"><div><b>${esc(c.t)}</b><small>${S.done.includes(s.id+'-'+i)?'Đã đọc':'Chưa đọc'}</small></div></button>`).join('')}`},
-read(){const s=cur(),c=s.c[CH];return `<div class=top><button class=ib onclick="stop();go('story')" aria-label="Quay lại">${ic('back')}</button><div class=logo style="font-size:15px">${esc(s.t)}</div><button class=ib onclick="fz(-1)">A−</button><button class=ib onclick="fz(1)">A+</button></div>
+read(){const s=cur(),c=s.c[CH];return `<div class=top><button class=ib onclick="exitCh()" aria-label="Quay lại">${ic('back')}</button><div class=logo style="font-size:15px">${esc(s.t)}</div><button class=ib onclick="fz(-1)">A−</button><button class=ib onclick="fz(1)">A+</button></div>
 <article class=rd style="--fs:${S.fs}px"><h1>${esc(c.t)}</h1>${c.b.map(p=>`<p>${esc(p)}</p>`).join('')}</article>`},
 tu(){const u=lv(),cr=Math.min(5,u.l/9|0);return `<div class=top><h1>Tu luyện</h1></div>${tuCard()}
 <p class=mu>Đọc một chương: +10 tu vi. Nghe audio online: +1 mỗi 10 giây. Tác giả đăng chương: +20 tu vi, và được cộng thêm theo lượt đọc.</p>
@@ -129,12 +129,14 @@ window.go=v=>{V=v;render();scrollTo(0,0)};
 window.op=i=>{ST=i;go('story')};
 window.rd=i=>{CH=i;const s=cur(),k=s.id+'-'+i;S.read=[s.id,...S.read.filter(x=>x!=s.id)];go('read');if(API){if(S.me)rq('/read','POST',{story:s.id,ch:i}).then(r=>gain(r,'đọc chương')).catch(e=>toast(e.message));else toast('Đăng nhập để tích tu vi');return}if(!S.done.includes(k)){S.done.push(k);save();if(S.me){add(10,'đọc chương');S.au[s.a]=(S.au[s.a]||0)+3;save()}else toast('Đăng nhập để tích tu vi')}};
 window.fz=d=>{S.fs=Math.max(14,Math.min(28,S.fs+d*2));save();render()};
-window.stop=()=>{playing=false;speechSynthesis.cancel();if(A){A.pause();A=null}clearInterval(tm)};
-window.pp=()=>{if(playing){stop();return render()}const s=cur();playing=true;
-if(API){A=new Audio(`${API}/api/tts?story=${s.id}&ch=${CH}`);A.onended=()=>nx(1);A.play()}
-else{const u=new SpeechSynthesisUtterance(s.c[CH].b.join(' '));u.lang='vi-VN';u.onend=()=>{if(playing)nx(1)};speechSynthesis.speak(u)}
+window.stopAudio=()=>{playing=false;clearInterval(tm);try{if(A){A.pause();A=null}}catch(e){}try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}};
+window.exitCh=()=>{stopAudio();go('story')};
+window.pp=()=>{if(playing){stopAudio();return render()}const s=cur();
+if(API){playing=true;const a=A=new Audio(`${API}/api/tts?story=${s.id}&ch=${CH}`);a.onended=()=>{if(A===a)nx(1)};a.onerror=()=>{if(A===a){stopAudio();render();toast('Không phát được audio, kiểm tra server giọng đọc')}};a.play().catch(()=>{})}
+else if(window.speechSynthesis&&window.SpeechSynthesisUtterance){playing=true;const u=new SpeechSynthesisUtterance(s.c[CH].b.join(' '));u.lang='vi-VN';u.onend=()=>{if(playing)nx(1)};speechSynthesis.speak(u)}
+else return toast('Máy này chưa có giọng đọc. Hãy nối server để nghe audio');
 tm=setInterval(()=>{if(!S.me)return;if(API)rq('/listen','POST',{}).then(r=>gain(r,'nghe truyện')).catch(()=>{});else add(1,'nghe truyện')},10000);render()};
-window.nx=d=>{const w=playing,n=cur().c.length;if(CH+d<0||CH+d>=n){stop();return render()}stop();rd(CH+d);if(w)pp()};
+window.nx=d=>{const w=playing,n=cur().c.length;if(CH+d<0||CH+d>=n){stopAudio();return render()}stopAudio();rd(CH+d);if(w)pp()};
 function sheet(h){const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class=sh>${h}</div>`;o.onclick=e=>{if(e.target==o)o.remove()};document.body.append(o)}
 window.dls=()=>{sheet(`<h2>Tải audio</h2><p class=mu>Chọn các chương để gộp thành một file.</p>${cur().c.map((c,i)=>`<label class=ck><input type=checkbox style="width:auto;margin:0" value=${i}${i==CH?' checked':''}>${esc(c.t)}</label>`).join('')}<button class=btn onclick="dl()">Tải audio</button>`)};
 window.dl=()=>{const ids=[...document.querySelectorAll('.sh input:checked')].map(x=>x.value);if(!ids.length)return toast('Chọn ít nhất một chương');if(!API)return toast('Cần nối server giọng đọc Google để tải audio');location.href=`${API}/api/audio?story=${ST}&ch=${ids.join(',')}`;$('.ov').remove()};
